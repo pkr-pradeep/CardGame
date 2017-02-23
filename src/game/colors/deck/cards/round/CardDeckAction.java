@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import java.util.Properties;
 
 import com.google.common.collect.Lists;
 
+import gae.colors.deck.cards.logger.CardLogger;
 import game.colors.deck.cards.category.ECardCategory;
 import game.colors.deck.cards.category.ECardDeck;
 import game.colors.deck.cards.manager.CardsManager;
@@ -20,6 +22,7 @@ import game.colors.deck.cards.player.CardPlayersVO;
 public class CardDeckAction {
 
 	static CardPlayersVO cardPlayersVO;
+	public static CardLogger cardLogger = new CardLogger();
 	
 	public static String doGetColorCard(){
 		List<ECardCategory> cardSuits = new ArrayList<>(Arrays.asList(ECardCategory.values()));
@@ -28,7 +31,7 @@ public class CardDeckAction {
 		return cardSuits.get(0).toString();
 	}
 
-	public static void dogetCardDeck(CardPlayersVO cardPlayersVO){
+	public static List<String> dogetCardDeck(CardPlayersVO cardPlayersVO){
 		List<String> cardsDeck = new ArrayList<>();
 		cardsDeck.addAll(ECardDeck.SPADES.deck);
 		cardsDeck.addAll(ECardDeck.DIAMONDS.deck);
@@ -37,6 +40,7 @@ public class CardDeckAction {
 		cardsDeck.addAll(ECardDeck.JOKER.deck);
 		cardsDeck.remove("SP_2");
 		cardPlayersVO.setCard(cardsDeck);
+		return cardsDeck;
 	}
 
 	public static List<String> doGetShuffled(List<String> cardDeck,CardPlayersVO cardPlayersVO) {
@@ -85,5 +89,16 @@ public class CardDeckAction {
 			}
 		}
 		cardPlayersVO.setPlayer(playerList);
+	}
+	
+	public static String doGenerateMessage(){
+		String fullClassName = Thread.currentThread().getStackTrace()[2].getClassName();
+	    String className = fullClassName.substring(fullClassName.lastIndexOf(".") + 1);
+	    String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+	    int lineNumber = Thread.currentThread().getStackTrace()[2].getLineNumber();
+	    Date logGenerateDate = new Date();
+	    System.out.println(fullClassName);
+	    String message = className + ".java-" + methodName+"()"  + " : Line"+lineNumber + " : "+logGenerateDate+" >>";
+	    return message;
 	}
 }
