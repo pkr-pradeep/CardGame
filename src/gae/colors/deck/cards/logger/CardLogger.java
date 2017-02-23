@@ -15,28 +15,25 @@ public class CardLogger {
 	public void info(final Object message) {
 		org.apache.log4j.BasicConfigurator.configure();
 		logger.setPriority(Priority.INFO);
-		logger.info(message);
 		storeLogs(message);
 	}
 
 	public void warn(final Object message) {
 		org.apache.log4j.BasicConfigurator.configure();
 		logger.setPriority(Priority.WARN);
-		logger.warn(message);
 		storeLogs(message);
 	}
 
-	public void error(final Object message) {
-		org.apache.log4j.BasicConfigurator.configure();
+	public void error(final Object message, Exception e) {
+		
 		logger.setPriority(Priority.ERROR);
-		logger.error(message);
-		storeLogs(message);
+		storeLogs(message,e);
 	}
 
 	public static void storeLogs(final Object message) {
 		Appender fh = null;
 		try {
-			fh = new FileAppender(new SimpleLayout(), "C:/Data/log/MyLogFile.log");
+			fh = new FileAppender(new SimpleLayout(), "C:/Data/log/card-colors.log");
 			logger.addAppender(fh);
 			fh.setLayout(new SimpleLayout());
 		} catch (SecurityException e) {
@@ -49,8 +46,23 @@ public class CardLogger {
 			logger.info(message);
 		} else if (logger.getPriority() == Priority.WARN) {
 			logger.warn(message);
-		} else if (logger.getPriority() == Priority.ERROR) {
-			logger.error(message);
+		}
+	}
+	
+	public static void storeLogs(final Object message,Exception e) {
+		Appender fh = null;
+		try {
+			fh = new FileAppender(new SimpleLayout(), "C:/Data/log/card-colors.log");
+			logger.addAppender(fh);
+			fh.setLayout(new SimpleLayout());
+		} catch (SecurityException ex) {
+			logger.error(e.getMessage(),e);
+		} catch (IOException ex) {
+			logger.error(e.getMessage(),e);
+		}
+		
+		if(logger.getPriority() == Priority.ERROR){
+			logger.error(message,e);
 		}
 	}
 }
